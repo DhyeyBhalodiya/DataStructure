@@ -39,18 +39,18 @@ void insertAtFront(int x) {
 }
 
 void insertAtEnd(int x) {
-    struct Node* save = (struct Node*)malloc(sizeof(struct Node));
-    save->info = x;
-    save->link = NULL;
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->info = x;
+    newNode->link = NULL;
     if (first == NULL) {
-        first = save;
+        first = newNode;
         return;
     }
-    struct Node * save  = first;
-    while (save -> link != NULL) {
-        save = save -> link;
+    struct Node* temp = first;
+    while (temp->link != NULL) {
+        temp = temp->link;
     }
-    save -> link = save;
+    temp->link = newNode;
 }
 
 void deleteFirstNode() {
@@ -68,19 +68,36 @@ void deleteLastNode() {
         printf("List is empty. Nothing to delete.\n");
         return;
     }
-    if (first -> link == NULL) {
+    if (first->link == NULL) {
         free(first);
         first = NULL;
         return;
     }
-    struct Node * save = first;
-    struct Node * prev = NULL;
-    while (save->link != NULL) {
-        prev = save;
-        save = save -> link;
+    struct Node* temp = first;
+    while (temp->link->link != NULL) {   // <- second-last node sudhi jaવાનું
+        temp = temp->link;
     }
-    prev -> link = NULL;
-    free(save);
+    free(temp->link);
+    temp->link = NULL;
+}
+
+void insertAtPos(int pos,int value){
+
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->info = value;
+
+
+        if (pos == 1){
+            newNode->link = first;
+            first = newNode;
+        }else{
+            struct Node* prev = first;
+            for (int i = 1; i <= pos-2; i++){
+                prev = prev -> link;
+            }
+            newNode->link = prev->link;
+            prev->link = newNode;
+        }
 }
 
 int main() {
@@ -92,7 +109,8 @@ int main() {
         printf("4. Delete Last Node\n");
         printf("5. Display List\n");
         printf("6. Count Nodes\n");
-        printf("7. Exit\n");
+        printf("7. Insert at Any position\n");
+        printf("8. Exit\n");
         printf("Enter your choice: ");
 
         if (scanf("%d", &choice) != 1) {
@@ -131,6 +149,13 @@ int main() {
                 printf("Total nodes: %d\n", countNodes());
                 break;
             case 7:
+                printf("Enter position: ");
+                scanf("%d", &pos);
+                printf("Enter value to insert: ");
+                scanf("%d", &x);
+                insertAtPos(pos, x);
+                break;
+            case 8:
                 exit(0);
             default:
                 printf("Invalid choice. Try again.\n");
